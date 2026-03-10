@@ -3,30 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Cronos 2026</title>
+    <title>CRONOS 2026</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Cronos 2026">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
-    
-    <link rel="manifest" href="data:application/manifest+json,{'name':'Cronos 2026','short_name':'Cronos','start_url':'.','display':'standalone','background_color':'#000000','theme_color':'#d4af37','icons':[{'src':'https://cdn-icons-png.flaticon.com/512/3652/3652191.png','sizes':'512x512','type':'image/png'}]}">
 
     <style>
-        :root { --ouro: #d4af37; --bg: #000000; --card: #1c1c1e; --verde: #32d74b; --vermelho: #ff453a; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; padding: env(safe-area-inset-top) 15px 80px 15px; }
+        :root { --ouro: #d4af37; --fundo: #121214; --card: #1e1e22; --texto: #ffffff; --verde: #2ecc71; --vermelho: #e74c3c; }
         
-        /* Logomarca */
-        .logo-box { text-align: center; padding: 20px 0; }
-        .logo-img { width: 60px; height: 60px; filter: drop-shadow(0 0 5px var(--ouro)); }
-        .logo-txt { font-size: 1.6rem; font-weight: 900; color: var(--ouro); letter-spacing: 2px; margin-top: 5px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--fundo); 
+            color: var(--texto); 
+            margin: 0; 
+            padding: 20px;
+            padding-bottom: 120px; /* Espaço para o botão fixo */
+        }
 
-        .header-fixo { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #333; margin-bottom: 20px; }
-        #relogio { font-size: 3rem; font-weight: 800; color: var(--ouro); }
+        .header { text-align: center; margin-bottom: 25px; background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--ouro); letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        #relogio { font-size: 2.5rem; font-weight: bold; color: #fff; display: block; font-family: monospace; }
+        #dia-atual { color: var(--ouro); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
 
-        .abas { display: flex; gap: 10px; margin-bottom: 20px; background: #1c1c1e; padding: 5px; border-radius: 15px; }
-        .aba-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; background: transparent; color: #888; }
-        .aba-btn.ativo { background: var(--ouro); color: #000; }
+        .nav-tabs { display: flex; background: #000; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; }
+        .tab { flex: 1; padding: 12px; border: none; border-radius: 8px; background: transparent; color: #666; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .tab.active { background: var(--ouro); color: #000; }
 
-        /* Quadro Unificado */
-        .tabela-unificada { width
+        .dia-bloco { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        .dia-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .dia-nome { color: var(--ouro); font-weight: bold; font-size: 1.1rem; }
+
+        .item-aula { background: #121214; padding: 15px; border-radius: 12px; margin-top: 10px; border: 1px solid #444; position: relative; }
+        
+        label { display: block; font-size: 0.7rem; color: #888; margin-bottom: 4px; font-weight: bold; }
+        input { 
+            width: 100%; background: #26262c; color: #fff; border: 1px solid #444; 
+            padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 1rem; 
+        }
+        input:focus { border-color: var(--ouro); outline: none; }
+
+        .btn-add { background: var(--ouro); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; }
+        .btn-del { background: none; color: var(--vermelho); border: 1px solid var(--vermelho); padding: 8px; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 5px; }
+        
+        .btn-salvar-fixo { 
+            position: fixed; bottom: 20px; left: 5%; width: 90%; 
+            background: var(--verde); color: #000; padding: 20px; 
+            border-radius: 18px; font-weight: bold; font-size: 1.2rem; 
+            border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 999;
+        }
+
+        /* Estilo Quadro Unificado */
+        .quadro-container { background: var(--card); border-radius: 15px; padding: 15px; display: none; border: 1px solid #333; }
+        .quadro-dia { border-bottom: 1px solid #333; padding: 10px 0; }
+        .quadro-aula { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span class="logo">CRONOS 2026</span>
+        <span id="relogio">00:00:00</span>
+        <span id="dia-atual">---</span>
+    </div>
+
+    <div class="nav-tabs">
+        <button id="t-edit" class="tab active" onclick="aba('edit')">EDITAR</button>
+        <button id="t-view" class="tab" onclick="aba('view')">QUADRO</button>
+    </div>
+
+    <div id="p-edit">
+        <div id="render-lista"></div>
+    </div>
+
+    <div id="p-view" class="quadro-container">
+        <div id="render-quadro"></div>
+    </div>
+
+    <button class="btn-salvar-fixo" onclick="salvar()">💾 SALVAR NO CELULAR (2026)</button>
+
+<script>
+    const STORAGE_KEY = "cronos_final_2026";
+    const SENHA = "2026";
+    const dias = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"];
+    
+    let agenda = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+    function aba(nome) {
+        document.getElementById('p-edit').style.display = nome === 'edit' ? 'block' : 'none';
+        document.getElementById('p-view').style.display = nome === 'view' ? 'block' : 'none';
+        document.getElementById('t-edit').classList.toggle('active', nome === 'edit');
+        document.getElementById('t-view').classList.toggle('active', nome === 'view');
+        if(nome === 'view') gerarQuadro();
+    }
+
+    function montarEditor() {
+        const root = document.getElementById('render-lista');
+        root.innerHTML = '';
+        dias.forEach(d => {
+            const aulas = agenda[d] || [];
+            let aulasHtml = aulas.map((a, i) => `
+                <div class="item-aula">
+                    <label>ATIVIDADE</label>
+                    <input type="text" value="${a.n}" placeholder="Ex: Jiu-Jitsu" onchange="upd('${d}',${i},'n',this.value)">
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1">
+                            <label>INÍCIO</label>
+                            <input type="time" value="${a.i}" onchange="upd('${d}',${i},'i',this.value)">
+                        </div>
+                        <div style="flex:1">
+                            <label>FIM</label>
+                            <input type="time" value="${a.f}" onchange="upd('${d}',${i},'f',this.value)">
+                        </div>
+                    </div>
+                    <button class="btn-del" onclick="del('${d}',${i})">Excluir Atividade</button>
+                </div>
+            `).join('');
+
+            root.innerHTML += `
+                <div class="dia-bloco">
+                    <div class="dia-topo">
+                        <span class="dia-nome">${d}</span>
+                        <button class="btn-add" onclick="add('${d}')">＋ ADD</button>
+                    </div>
+                    ${aulasHtml || '<p style="text-align:center; color:#555; font-size:0.8rem;">Clique em + para adicionar</p>'}
+                </div>`;
+        });
+    }
+
+    function add(d) { if(!agenda[d]) agenda[d] = []; agenda[d].push({n:'', i:'', f:''}); montarEditor(); }
+    function upd(d, i, f, v) { agenda[d][i][f] = v; }
+    function del(d, i) { if(prompt("Senha:") === SENHA) { agenda[d].splice(i,1); montarEditor(); } }
+    
+    function salvar() { 
+        if(prompt("Digite a Senha 2026 para salvar:") === SENHA) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(agenda));
+            alert("✅ Horários salvos com sucesso!");
+        } else {
+            alert("❌ Senha incorreta!");
+        }
+    }
+
+    function gerarQuadro() {
+        const q = document.getElementById('render-quadro');
+        q.innerHTML = '<h3 style="text-align:center; color:var(--ouro); margin-top:0;">Cronograma Semanal</h3>';
+        dias.forEach(d => {
+            const lista = agenda[d] || [];
+            if(lista.length > 0) {
+                let items = lista.map(a => `
+                    <div class="quadro-aula">
+                        <span>${a.n || 'Sem nome'}</span>
+                        <span style="color:#888; font-size:0.9rem;">${a.i} - ${a.f}</span>
+                    </div>
+                `).join('');
+                q.innerHTML += `<div class="quadro-dia"><strong style="color:var(--ouro)">${d}</strong>${items}</div>`;
+            }
+        });
+    }
+
+    // Relógio e Alarmes
+    setInterval(() => {
+        const agora = new Date();
+        const horaMin = agora.getHours().toString().padStart(2,'0') + ":" + agora.getMinutes().toString().padStart(2,'0');
+        const diaNome = dias[agora.getDay() === 0 ? 6 : agora.getDay()-1];
+        
+        document.getElementById('relogio').innerText = agora.toLocaleTimeString('pt-BR');
+        document.getElementById('dia-atual').innerText = diaNome;
+
+        // Verifica alarmes a cada minuto (no segundo 0)
+        if (agora.getSeconds() === 0 && agenda[diaNome]) {
+            agenda[diaNome].forEach(a => {
+                if(a.i === horaMin) alert("🔔 HORA DE COMEÇAR: " + a.n);
+                if(a.f === horaMin) alert("🛑 HORA DE TERMINAR: " + a.n);
+            });
+        }
+    }, 1000);
+
+    montarEditor();
+</script>
+</body>
+</html>
